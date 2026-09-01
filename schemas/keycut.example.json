@@ -1,0 +1,14 @@
+{
+  "keycuts": [
+    {
+      "id": "K1",
+      "character": "인물A",
+      "face": "20대 여성, 단발머리, 밝은 표정",
+      "outfit": "흰색 셔츠, 청바지",
+      "props": ["제품(음료 캔)"],
+      "time_of_day": "낮, 실내 카페",
+      "approved": false,
+      "approved_image": null
+    }
+  ]
+}

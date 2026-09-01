@@ -1,0 +1,30 @@
+{
+  "source": "원본광고.mp4",
+  "clip_range": { "start": "1:03", "end": "1:20" },
+  "cuts": [
+    {
+      "id": 1,
+      "start_s": 0.0,
+      "end_s": 4.2,
+      "shot_type": "클로즈업",
+      "characters": ["인물A"],
+      "action": "카메라를 정면으로 보며 미소짓는다",
+      "camera_move": "고정",
+      "keycut_id": "K1",
+      "ref_frame": "refs/cut1_frame.png",
+      "status": "대기"
+    },
+    {
+      "id": 2,
+      "start_s": 4.2,
+      "end_s": 9.5,
+      "shot_type": "미디엄샷",
+      "characters": ["인물A"],
+      "action": "제품을 들어 보여준다",
+      "camera_move": "천천히 줌인",
+      "keycut_id": "K1",
+      "ref_frame": "refs/cut2_frame.png",
+      "status": "대기"
+    }
+  ]
+}
