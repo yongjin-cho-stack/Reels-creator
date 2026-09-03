@@ -1,0 +1,28 @@
+# 생성물 — Git 에 넣지 않는다.
+# 컷 11개 × 후보 2개 = 영상 22개, 개당 3~5MB → 100MB 에 육박한다.
+# 한 번 올리면 지워도 기록에 남아 레포가 영구히 무거워진다.
+videos/*
+!videos/.gitkeep
+*.mp4
+*.mov
+*.webm
+
+# 키컷 후보도 양이 많다. 채택본만 손으로 올린다.
+keycuts/*
+!keycuts/.gitkeep
+!keycuts/K1.png
+!keycuts/K1.jpg
+
+# 비용 기록은 로컬에만
+cost.log
+
+# 열쇠는 절대 올리지 않는다
+.env
+.env.*
+!.env.example
+
+# 파이썬
+__pycache__/
+*.pyc
+.venv/
+venv/

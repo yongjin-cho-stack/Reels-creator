@@ -1,0 +1,138 @@
+{
+  "source": "00_src/src_17s.mp4",
+  "clip_range": { "start": "1:03", "end": "1:20" },
+  "cuts": [
+    {
+      "id": 1,
+      "start_s": 0.0,
+      "end_s": 5.0,
+      "shot_type": "풀샷",
+      "characters": ["화가"],
+      "action": "1. 노을 진 바다 수면이 서서히 유화 붓터치로 변한다 2. 카메라가 뒤로 빠지며 그것이 캔버스 위의 그림임이 드러난다 3. 검은 니트를 입은 화가의 뒷모습이 프레임에 들어온다",
+      "camera_move": "줌아웃",
+      "keycut_id": "K1",
+      "ref_frame": "refs/cut01_start.jpg",
+      "status": "대기"
+    },
+    {
+      "id": 2,
+      "start_s": 5.0,
+      "end_s": 6.13,
+      "shot_type": "익스트림 클로즈업",
+      "characters": ["화가"],
+      "action": "붓끝으로 캔버스의 파도 부분에 흰 물감을 찍어 올린다",
+      "camera_move": "고정",
+      "keycut_id": "K1",
+      "ref_frame": "refs/cut02.jpg",
+      "status": "대기"
+    },
+    {
+      "id": 3,
+      "start_s": 6.13,
+      "end_s": 7.27,
+      "shot_type": "클로즈업",
+      "characters": ["화가"],
+      "action": "그림을 응시하며 붓질한다. 안경 너머 시선이 캔버스를 향한다",
+      "camera_move": "천천히 줌인",
+      "keycut_id": "K1",
+      "ref_frame": "refs/cut03.jpg",
+      "status": "대기"
+    },
+    {
+      "id": 4,
+      "start_s": 7.27,
+      "end_s": 10.1,
+      "shot_type": "항공샷 · 분할화면 배경",
+      "characters": [],
+      "action": "제주 해안의 파도가 검은 현무암 자갈밭에 하얗게 부서진다",
+      "camera_move": "고정",
+      "keycut_id": null,
+      "ref_frame": "refs/cut04_bg.jpg",
+      "status": "대기"
+    },
+    {
+      "id": 5,
+      "start_s": 8.03,
+      "end_s": 10.1,
+      "shot_type": "분할창1 · 클로즈업",
+      "characters": ["화가"],
+      "action": "캔버스 앞에서 붓질하는 화가의 측면. 시선은 그림을 향한다",
+      "camera_move": "고정",
+      "keycut_id": "K1",
+      "ref_frame": "refs/cut04_win1.jpg",
+      "status": "대기"
+    },
+    {
+      "id": 6,
+      "start_s": 8.36,
+      "end_s": 10.1,
+      "shot_type": "분할창2 · 미디엄샷",
+      "characters": ["화가"],
+      "action": "1. 팔레트 위로 파란 물감을 붓는다 2. 물감이 흘러내려 고인다",
+      "camera_move": "고정",
+      "keycut_id": "K1",
+      "ref_frame": "refs/cut04_win2.jpg",
+      "status": "대기"
+    },
+    {
+      "id": 7,
+      "start_s": 9.36,
+      "end_s": 10.1,
+      "shot_type": "분할창3 · 익스트림 클로즈업",
+      "characters": [],
+      "action": "붓으로 팔레트 위의 초록·파랑 물감을 섞는다",
+      "camera_move": "고정",
+      "keycut_id": "K1",
+      "ref_frame": "refs/cut04_win3.jpg",
+      "status": "대기"
+    },
+    {
+      "id": 8,
+      "start_s": 10.1,
+      "end_s": 11.47,
+      "shot_type": "클로즈업",
+      "characters": [],
+      "action": "나무 주걱으로 옹기 항아리에 마른 찻잎을 붓는다",
+      "camera_move": "고정",
+      "keycut_id": "K1",
+      "ref_frame": "refs/cut05.jpg",
+      "status": "대기"
+    },
+    {
+      "id": 9,
+      "start_s": 11.47,
+      "end_s": 12.77,
+      "shot_type": "클로즈업",
+      "characters": ["화가"],
+      "action": "1. 자사호를 기울여 찻잔에 차를 따른다 2. 김이 피어오른다. 오른쪽에 오설록 일로향 원통이 놓여 있다",
+      "camera_move": "고정",
+      "keycut_id": "K1",
+      "ref_frame": "refs/cut06.jpg",
+      "status": "대기"
+    },
+    {
+      "id": 10,
+      "start_s": 12.77,
+      "end_s": 14.68,
+      "shot_type": "풀샷",
+      "characters": ["화가"],
+      "action": "완성된 파도 그림이 놓인 이젤 앞을 화가가 왼쪽에서 오른쪽으로 천천히 지나간다",
+      "camera_move": "고정",
+      "keycut_id": "K1",
+      "ref_frame": "refs/cut07.jpg",
+      "status": "대기"
+    },
+    {
+      "id": 11,
+      "start_s": 14.68,
+      "end_s": 16.41,
+      "shot_type": "미디엄샷",
+      "characters": ["화가"],
+      "action": "1. 창가에 서서 찻잔을 입가로 들어 올린다 2. 차를 한 모금 마신다",
+      "camera_move": "고정",
+      "keycut_id": "K1",
+      "ref_frame": "refs/cut08.jpg",
+      "status": "대기"
+    }
+  ]
+}
