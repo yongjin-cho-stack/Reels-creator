@@ -19,5 +19,36 @@
   "clamps": {
     "4": 2.769,
     "11": 1.668
-  }
+  },
+  "look": [
+    {
+      "id": "lk-grain",
+      "type": "grain",
+      "params": {
+        "amount": 0.12
+      }
+    },
+    {
+      "id": "lk-halation",
+      "type": "halation",
+      "params": {
+        "amount": 0.35,
+        "radius": 20
+      }
+    },
+    {
+      "id": "lk-teal",
+      "type": "tealOrange",
+      "params": {
+        "amount": 0.25
+      }
+    },
+    {
+      "id": "lk-vig",
+      "type": "vignette",
+      "params": {
+        "amount": 0.18
+      }
+    }
+  ]
 }

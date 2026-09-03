@@ -73,7 +73,7 @@ def load_polish() -> dict:
     """C-2 의 결정을 읽는다. 없으면 «아무것도 안 고침» 이다."""
     p = ROOT / "polish" / "decide.json"
     if not p.exists():
-        return {"transitions": [], "trims": {}, "clamps": {}}
+        return {"transitions": [], "trims": {}, "clamps": {}, "look": []}
     return json.loads(p.read_text(encoding="utf-8"))
 
 
@@ -117,6 +117,8 @@ def build(plan: dict) -> tuple[str, str]:
             dur = min(dur, int(clamps[cid] * 1000))
         head = int(round(trims.get(cid, 0) * 1000))   # 앞에서 버릴 만큼
         extra = {"in": head, "out": head + dur, "speed": 1, "volume": 0}
+        if pol.get("look"):
+            extra["effects"] = [dict(e) for e in pol["look"]]   # 전 컷에 같은 룩
         if cid in t_in:
             extra["transitionIn"] = {"type": t_in[cid]["type"],
                                      "duration": t_in[cid]["duration_ms"]}

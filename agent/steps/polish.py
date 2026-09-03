@@ -155,6 +155,29 @@ TRANSITIONS = {
     #   9→10 같은 방 · 10→11 같은 방
 }
 
+# ─────────────────────────────────────────────────────────────────
+# 룩(look) — 「AI 스럽지 않게」 만드는 층. 판단이 아니라 **규칙**이다.
+# ─────────────────────────────────────────────────────────────────
+#
+# 색 맞추기(match_color)와 헷갈리면 안 된다.
+#   · match_color = 컷들이 **서로 다른 것**을 맞춘다
+#   · 룩          = **전부에 같은 옷**을 입힌다
+# 순서는 반드시 색 맞추기 → 룩. 거꾸로 하면 제각각인 채로 물만 든다.
+#
+# 자료: "진짜 실사처럼 보이게 하되 약간의 포인트에 AI적 요소가 작용하자"
+# AI 영상은 **너무 깨끗해서** 가짜 같다. 입자와 빛 번짐이 그걸 덮는다.
+#
+LOOK = [
+    # 필름 입자 — 너무 깨끗한 것을 덮는다. 세게 걸면 지저분해지므로 낮게.
+    {"id": "lk-grain", "type": "grain", "params": {"amount": 0.12}},
+    # 밝은 곳의 빛 번짐 — 원본의 실내등·달빛이 실제로 이렇게 번진다.
+    {"id": "lk-halation", "type": "halation", "params": {"amount": 0.35, "radius": 20}},
+    # 따뜻한 인물 / 차가운 배경 — 원본이 «따뜻한 실내 + 차가운 창밖»이다.
+    {"id": "lk-teal", "type": "tealOrange", "params": {"amount": 0.25}},
+    # 가장자리를 살짝 눌러 시선을 모은다.
+    {"id": "lk-vig", "type": "vignette", "params": {"amount": 0.18}},
+]
+
 # 끝이 중요한 컷 — 여유를 **앞에서** 버린다.
 # 컷 1은 「바다가 유화로 변하며 줌아웃 → 화가 뒷모습이 드러난다」라 끝이 알맹이다.
 TRIM_FROM_HEAD = {1}
@@ -173,7 +196,8 @@ def decide(rep: dict) -> dict:
     # JSON 은 튜플 키를 못 담는다 → 목록으로 편다.
     trans = [{"from": a, "to": b, "type": ty, "duration_ms": ms}
              for (a, b), (ty, ms) in TRANSITIONS.items()]
-    return {"transitions": trans, "trims": trims, "clamps": clamps}
+    return {"transitions": trans, "trims": trims, "clamps": clamps,
+            "look": [dict(e) for e in LOOK]}
 
 
 def run(dry: bool = True) -> None:
@@ -204,5 +228,7 @@ def run(dry: bool = True) -> None:
         print(f"    트림   컷{cid:>2}          앞에서 {s}초 버림 (끝이 중요한 컷)")
     for cid, s in plan["clamps"].items():
         print(f"    ⚠ 길이  컷{cid:>2}          소스가 짧다 → {s}초로 줄임")
+    print("    룩     " + " · ".join(
+        f"{e['type']} {list(e['params'].values())[0]}" for e in plan["look"]))
     print(f"  결정      {rel(POLISH / 'decide.json')}")
     print("  → 다음: apply — 이 결정을 kitkat 명령으로 옮긴다")
