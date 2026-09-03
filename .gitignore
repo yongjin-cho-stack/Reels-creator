@@ -26,3 +26,14 @@ __pycache__/
 *.pyc
 .venv/
 venv/
+
+# 음원·오디오는 저작권이 있다. 레포에 넣지 않는다.
+bgm/*
+!bgm/.gitkeep
+*.wav
+*.mp3
+*.m4a
+
+# 생성된 컷 이미지도 양이 많다. 채택본만 손으로 올린다.
+images/*
+!images/.gitkeep
