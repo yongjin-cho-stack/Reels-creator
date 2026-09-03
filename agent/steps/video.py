@@ -18,7 +18,7 @@ D(컷 이미지)가 사람이 고른 `images/cutNN.png`를 채택본으로 남�
 
 from __future__ import annotations
 
-from ..paths import IMAGES, VIDEOS, rel
+from ..paths import IMAGES, ROOT, VIDEOS, rel
 from ..providers import fal
 from ._common import load_cuts
 
@@ -39,9 +39,27 @@ def build_prompt(cut: dict) -> str:
 
 
 def image_for(cut: dict):
-    """이 컷의 채택된 이미지. images/cutNN.png (사람이 D 단계에서 고른 파일)."""
-    p = IMAGES / f"cut{cut['id']:02d}.png"
-    return p if p.exists() else None
+    """이 컷의 채택된 이미지.
+
+    「후보 중 무엇을 골랐나」를 적는 방법이 두 가지다. 둘 다 받는다.
+
+      ① cuts.json 의 `selected_image` 에 적는다   ← 스키마 v3, 이쪽을 권한다
+      ② images/cutNN.png 로 이름을 바꾼다          ← 예전 방식, 그대로 산다
+
+    ①을 권하는 이유: 이름을 바꾸면 후보가 둘이었다는 기록이 사라져서
+    나중에 「b 가 나았나」를 다시 못 본다. 그리고 11컷이면 손으로 11번,
+    30초 광고면 22번 바꿔야 해서 사람이 틀린다.
+    """
+    sel = cut.get("selected_image")
+    if sel:
+        p = ROOT / sel
+        if p.exists():
+            return p
+    for ext in ("png", "jpg"):
+        p = IMAGES / f"cut{cut['id']:02d}.{ext}"
+        if p.exists():
+            return p
+    return None
 
 
 def check() -> dict:
