@@ -23,7 +23,16 @@ W, H = 1920, 1080
 
 
 def source_for(cut: dict) -> tuple:
-    """이 컷에 쓸 정지 이미지. 생성본이 있으면 그것, 없으면 원본 구도 프레임."""
+    """이 컷에 쓸 정지 이미지.
+
+    cuts.json 의 `selected_image` 가 있으면 그것 — «후보 중 무엇을 골랐나»는
+    파일 이름을 바꾸는 게 아니라 **파일에 적는다.** 이름을 바꾸면 후보가
+    둘이었다는 기록이 사라지고, 손으로 22번 바꾸면 틀린다.
+    없으면 원본 구도 프레임으로 대체해서 아무도 안 기다린다.
+    """
+    sel = cut.get("selected_image")
+    if sel and (ROOT / sel).exists():
+        return ROOT / sel, "생성"
     for ext in ("png", "jpg"):
         made = IMAGES / f"cut{cut['id']:02d}.{ext}"
         if made.exists():

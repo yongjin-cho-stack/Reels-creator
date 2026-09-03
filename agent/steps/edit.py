@@ -38,7 +38,14 @@ WINDOW_BOX = {
 
 
 def source_for(cut: dict) -> tuple:
-    """이 컷에 쓸 영상. 제작A 결과가 있으면 그것, 없으면 원본 조각(개발용)."""
+    """이 컷에 쓸 영상.
+
+    cuts.json 의 `selected_video` 가 있으면 그것 (베스트컷 선택의 결과).
+    없으면 videos/ 를 뒤지고, 그것도 없으면 원본 조각(개발용)으로 떨어진다.
+    """
+    sel = cut.get("selected_video")
+    if sel and (ROOT / sel).exists():
+        return ROOT / sel, "선택본"
     for d, kind in ((VIDEOS, "제작A"), (FAKE_VIDEOS, "원본조각")):
         if d.is_dir():
             hit = sorted(d.glob(f"cut{cut['id']:02d}*"))

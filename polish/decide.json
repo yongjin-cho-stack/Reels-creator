@@ -1,13 +1,13 @@
 {
   "transitions": [
     {
-      "from": 3,
+      "from": null,
       "to": 4,
       "type": "fade",
       "duration_ms": 400
     },
     {
-      "from": 4,
+      "from": null,
       "to": 8,
       "type": "fade",
       "duration_ms": 300

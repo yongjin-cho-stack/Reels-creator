@@ -184,18 +184,41 @@ TRIM_FROM_HEAD = {1}
 
 
 def decide(rep: dict) -> dict:
-    """재료를 보고 결정한다. 지금은 위 표를 읽지만, 자리는 여기다."""
-    trims, clamps = {}, {}
+    """재료를 보고 결정한다. ★ 여기가 LLM 자리다.
+
+    스키마 v2 부터 **기획이 미리 정한 게 있으면 그걸 따른다** —
+    `transition_in`(전환)과 `key_moment`(어디가 알맹이냐)는 기획이 아는 것이다.
+    비어 있을 때만 아래 표/규칙으로 판단한다.
+    """
+    cuts = {c["id"]: c for c in load_cuts()["cuts"]}
+    trims, clamps, trans = {}, {}, []
+
+    for cid, c in cuts.items():
+        ti = c.get("transition_in")
+        if ti:
+            trans.append({"from": None, "to": cid,
+                          "type": ti["type"], "duration_ms": ti["duration_ms"]})
+    if not trans:                                  # 기획이 안 정했으면 우리 표
+        trans = [{"from": a, "to": b, "type": ty, "duration_ms": ms}
+                 for (a, b), (ty, ms) in TRANSITIONS.items()]
+
     for c in rep["cuts"]:
+        cut = cuts.get(c["id"], {})
         slack = c["slack_seconds"]
         if slack < 0:
-            # 소스가 필요한 길이보다 짧다 → 끝이 검게 나오거나 얼어붙는다.
             clamps[c["id"]] = round(c["source_seconds"], 3)
-        elif c["id"] in TRIM_FROM_HEAD and slack > 0.05:
-            trims[c["id"]] = round(slack, 3)      # 앞에서 이만큼 버린다
-    # JSON 은 튜플 키를 못 담는다 → 목록으로 편다.
-    trans = [{"from": a, "to": b, "type": ty, "duration_ms": ms}
-             for (a, b), (ty, ms) in TRANSITIONS.items()]
+            continue
+        if slack <= 0.05:
+            continue
+        moment = cut.get("key_moment")
+        if moment is None:
+            moment = "tail" if c["id"] in TRIM_FROM_HEAD else None
+        if moment == "tail":                       # 알맹이가 끝 → 앞을 버린다
+            trims[c["id"]] = round(slack, 3)
+        elif moment == "middle":                   # 앞뒤로 반씩
+            trims[c["id"]] = round(slack / 2, 3)
+        # "head" 면 뒤를 버린다 = 앞을 안 버린다 = 아무것도 안 한다
+
     return {"transitions": trans, "trims": trims, "clamps": clamps,
             "look": [dict(e) for e in LOOK]}
 
@@ -220,8 +243,9 @@ def run(dry: bool = True, only: int | None = None) -> None:
     print()
     print("  판단")
     for tr in plan["transitions"]:
-        print(f"    전환   컷{tr['from']:>2} → 컷{tr['to']:<2}   "
-              f"{tr['type']} {tr['duration_ms']}ms")
+        # 기획이 정한 전환은 «어느 컷으로 들어오는가»만 안다 (from 이 None).
+        where = f"컷{tr['from']:>2} → 컷{tr['to']:<2}" if tr.get("from") else f"컷{tr['to']:<2} 들어올 때"
+        print(f"    전환   {where:<14} {tr['type']} {tr['duration_ms']}ms")
     if not plan["transitions"]:
         print("    전환   없음 (전부 하드컷)")
     for cid, s in plan["trims"].items():

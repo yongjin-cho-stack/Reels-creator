@@ -42,6 +42,8 @@ def main(argv: list[str] | None = None) -> int:
     ap = argparse.ArgumentParser(prog="agent.run")
     ap.add_argument("step", choices=[*STEPS, "all"])
     ap.add_argument("--go", action="store_true", help="실제로 실행 (기본은 시험 실행)")
+    ap.add_argument("--num", type=int, default=None,
+                    help="컷당 후보 장수 (기본 2). 시험 삼아 뽑을 땐 1 로 줄여 반값")
     ap.add_argument("--only-cut", type=int, default=None,
                     help="컷 하나만 (파일럿). 돈을 조금만 쓰고 확인할 때")
     args = ap.parse_args(argv)
@@ -55,7 +57,10 @@ def main(argv: list[str] | None = None) -> int:
             print()
         print(f"── {label} " + "─" * (52 - len(label)))
         try:
-            mod.run(dry=not args.go, only=args.only_cut)
+            kw = {"dry": not args.go, "only": args.only_cut}
+            if args.num is not None:      # 이미지를 뽑는 단계만 이 칸을 받는다
+                kw["num"] = args.num
+            mod.run(**kw)
         except StepBlocked as e:
             blocked += 1
             print(f"  ⏸ 멈춤 — {e}")

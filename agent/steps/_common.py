@@ -54,24 +54,28 @@ def save_json(path: Path, data: dict) -> None:
 
 
 def timeline(cuts: dict) -> list[dict]:
-    """겹치지 않는 «바닥 트랙» 컷만 시각 순으로. 분할화면 오버레이는 뺀다.
+    """바닥 트랙(layer 0) 컷만 시각 순으로.
 
-    컷 4~7 은 같은 시간대를 공유한다(4 가 배경, 5~7 이 그 위에 얹히는 창).
-    타임라인 길이를 잴 때 이걸 다 더하면 안 된다.
+    스키마 v2 부터 `layer` 가 이걸 **명시**한다 — 0 은 바닥, 1 이상은 그 위에
+    얹히는 창이다. v1 때는 «시간이 겹치면 오버레이»로 추론했는데, 실수로 겹친
+    컷과 일부러 겹친 컷을 구분 못 해서 위험했다. 없으면 옛 방식으로 떨어진다.
     """
     items = sorted(cuts["cuts"], key=lambda c: (c["start_s"], c["id"]))
+    if any("layer" in c for c in items):
+        return [c for c in items if c.get("layer", 0) == 0]
     out: list[dict] = []
     for c in items:
         if out and c["start_s"] < out[-1]["end_s"] - 1e-6:
-            continue  # 앞 컷과 겹친다 → 오버레이
+            continue
         out.append(c)
     return out
 
 
 def overlays(cuts: dict) -> list[dict]:
-    """바닥 트랙에 얹히는 컷들 (분할화면 창)."""
+    """바닥 위에 얹히는 컷들 (분할화면 창). layer 순으로 아래→위."""
     base_ids = {c["id"] for c in timeline(cuts)}
-    return [c for c in cuts["cuts"] if c["id"] not in base_ids]
+    ov = [c for c in cuts["cuts"] if c["id"] not in base_ids]
+    return sorted(ov, key=lambda c: (c.get("layer", 1), c["start_s"]))
 
 
 def total_seconds(cuts: dict) -> float:

@@ -1,138 +1,318 @@
 {
+  "schema_version": "3",
   "source": "00_src/src_17s.mp4",
-  "clip_range": { "start": "1:03", "end": "1:20" },
+  "clip_range": {
+    "start": "1:03",
+    "end": "1:20"
+  },
   "cuts": [
     {
       "id": 1,
+      "layer": 0,
       "start_s": 0.0,
       "end_s": 5.0,
       "shot_type": "풀샷",
-      "characters": ["화가"],
-      "action": "1. 노을 진 바다 수면이 서서히 유화 붓터치로 변한다 2. 카메라가 뒤로 빠지며 그것이 캔버스 위의 그림임이 드러난다 3. 검은 니트를 입은 화가의 뒷모습이 프레임에 들어온다",
+      "framing": "인물은 프레임 높이의 1/3 이하. 캔버스와 실내 공간이 함께 보인다",
       "camera_move": "줌아웃",
+      "characters": [
+        "화가"
+      ],
+      "action": "1. 노을 진 바다 수면이 서서히 유화 붓터치로 변한다 2. 카메라가 뒤로 빠지며 그것이 캔버스 위의 그림임이 드러난다 3. 검은 니트를 입은 화가의 뒷모습이 프레임에 들어온다",
+      "props": [
+        "이젤과 캔버스",
+        "유화붓"
+      ],
+      "fantasy": "실사 바다가 유화 붓터치로 변한다",
+      "narration": null,
+      "subtitle": null,
       "keycut_id": "K1",
       "ref_frame": "refs/cut01_start.jpg",
-      "status": "대기"
+      "ref_frame_end": "refs/cut01_end.jpg",
+      "key_moment": "tail",
+      "transition_in": null,
+      "status": "대기",
+      "selected_image": null,
+      "selected_video": null
     },
     {
       "id": 2,
+      "layer": 0,
       "start_s": 5.0,
       "end_s": 6.13,
       "shot_type": "익스트림 클로즈업",
-      "characters": ["화가"],
-      "action": "붓끝으로 캔버스의 파도 부분에 흰 물감을 찍어 올린다",
+      "framing": "붓끝과 캔버스 표면이 프레임을 가득 채운다. 얼굴은 안 보인다",
       "camera_move": "고정",
+      "characters": [
+        "화가"
+      ],
+      "action": "붓끝으로 캔버스의 파도 부분에 흰 물감을 찍어 올린다",
+      "props": [
+        "유화붓",
+        "이젤과 캔버스"
+      ],
+      "fantasy": null,
+      "narration": null,
+      "subtitle": null,
       "keycut_id": "K1",
       "ref_frame": "refs/cut02.jpg",
-      "status": "대기"
+      "ref_frame_end": null,
+      "key_moment": "middle",
+      "transition_in": null,
+      "status": "대기",
+      "selected_image": null,
+      "selected_video": null
     },
     {
       "id": 3,
+      "layer": 0,
       "start_s": 6.13,
       "end_s": 7.27,
       "shot_type": "클로즈업",
-      "characters": ["화가"],
-      "action": "그림을 응시하며 붓질한다. 안경 너머 시선이 캔버스를 향한다",
+      "framing": "얼굴이 프레임 높이의 60~70%. 어깨 위만 보인다. 배경은 얕은 심도로 흐림",
       "camera_move": "천천히 줌인",
+      "characters": [
+        "화가"
+      ],
+      "action": "그림을 응시하며 붓질한다. 안경 너머 시선이 캔버스를 향한다",
+      "props": [
+        "안경",
+        "유화붓",
+        "이젤과 캔버스"
+      ],
+      "fantasy": null,
+      "narration": null,
+      "subtitle": null,
       "keycut_id": "K1",
       "ref_frame": "refs/cut03.jpg",
-      "status": "대기"
+      "ref_frame_end": null,
+      "key_moment": "middle",
+      "transition_in": null,
+      "status": "대기",
+      "selected_image": null,
+      "selected_video": null
     },
     {
       "id": 4,
+      "layer": 0,
       "start_s": 7.27,
       "end_s": 10.1,
-      "shot_type": "항공샷 · 분할화면 배경",
+      "shot_type": "항공샷",
+      "framing": "위에서 수직으로 내려다본다. 인물 없음. 파도선이 화면을 가로지른다",
+      "camera_move": "고정",
       "characters": [],
       "action": "제주 해안의 파도가 검은 현무암 자갈밭에 하얗게 부서진다",
-      "camera_move": "고정",
+      "props": [],
+      "fantasy": null,
+      "narration": null,
+      "subtitle": null,
       "keycut_id": null,
       "ref_frame": "refs/cut04_bg.jpg",
-      "status": "대기"
+      "ref_frame_end": null,
+      "key_moment": "middle",
+      "transition_in": {
+        "type": "fade",
+        "duration_ms": 400
+      },
+      "status": "대기",
+      "selected_image": null,
+      "selected_video": null
     },
     {
       "id": 5,
+      "layer": 1,
       "start_s": 8.03,
       "end_s": 10.1,
-      "shot_type": "분할창1 · 클로즈업",
-      "characters": ["화가"],
-      "action": "캔버스 앞에서 붓질하는 화가의 측면. 시선은 그림을 향한다",
+      "shot_type": "클로즈업",
+      "framing": "인물의 측면. 상반신이 프레임의 절반쯤",
       "camera_move": "고정",
+      "characters": [
+        "화가"
+      ],
+      "action": "캔버스 앞에서 붓질하는 화가의 측면. 시선은 그림을 향한다",
+      "props": [
+        "유화붓",
+        "이젤과 캔버스"
+      ],
+      "fantasy": null,
+      "narration": null,
+      "subtitle": null,
       "keycut_id": "K1",
       "ref_frame": "refs/cut04_win1.jpg",
-      "status": "대기"
+      "ref_frame_end": null,
+      "key_moment": "middle",
+      "transition_in": null,
+      "status": "대기",
+      "selected_image": null,
+      "selected_video": null
     },
     {
       "id": 6,
+      "layer": 2,
       "start_s": 8.36,
       "end_s": 10.1,
-      "shot_type": "분할창2 · 미디엄샷",
-      "characters": ["화가"],
-      "action": "1. 팔레트 위로 파란 물감을 붓는다 2. 물감이 흘러내려 고인다",
+      "shot_type": "미디엄샷",
+      "framing": "손과 팔레트가 프레임 중앙. 인물은 어깨까지만 걸친다",
       "camera_move": "고정",
+      "characters": [
+        "화가"
+      ],
+      "action": "1. 팔레트 위로 파란 물감을 붓는다 2. 물감이 흘러내려 고인다",
+      "props": [
+        "나무 팔레트",
+        "물감"
+      ],
+      "fantasy": null,
+      "narration": null,
+      "subtitle": null,
       "keycut_id": "K1",
       "ref_frame": "refs/cut04_win2.jpg",
-      "status": "대기"
+      "ref_frame_end": null,
+      "key_moment": "middle",
+      "transition_in": null,
+      "status": "대기",
+      "selected_image": null,
+      "selected_video": null
     },
     {
       "id": 7,
+      "layer": 3,
       "start_s": 9.36,
       "end_s": 10.1,
-      "shot_type": "분할창3 · 익스트림 클로즈업",
+      "shot_type": "익스트림 클로즈업",
+      "framing": "붓끝과 팔레트가 프레임을 가득 채운다. 인물은 안 보인다",
+      "camera_move": "고정",
       "characters": [],
       "action": "붓으로 팔레트 위의 초록·파랑 물감을 섞는다",
-      "camera_move": "고정",
+      "props": [
+        "유화붓",
+        "나무 팔레트",
+        "물감"
+      ],
+      "fantasy": null,
+      "narration": null,
+      "subtitle": null,
       "keycut_id": "K1",
       "ref_frame": "refs/cut04_win3.jpg",
-      "status": "대기"
+      "ref_frame_end": null,
+      "key_moment": "middle",
+      "transition_in": null,
+      "status": "대기",
+      "selected_image": null,
+      "selected_video": null
     },
     {
       "id": 8,
+      "layer": 0,
       "start_s": 10.1,
       "end_s": 11.47,
       "shot_type": "클로즈업",
+      "framing": "옹기 입구와 주걱이 프레임 중앙. 인물은 안 보인다",
+      "camera_move": "고정",
       "characters": [],
       "action": "나무 주걱으로 옹기 항아리에 마른 찻잎을 붓는다",
-      "camera_move": "고정",
+      "props": [
+        "옹기 항아리",
+        "나무 차시",
+        "마른 찻잎"
+      ],
+      "fantasy": null,
+      "narration": null,
+      "subtitle": null,
       "keycut_id": "K1",
       "ref_frame": "refs/cut05.jpg",
-      "status": "대기"
+      "ref_frame_end": null,
+      "key_moment": "middle",
+      "transition_in": {
+        "type": "fade",
+        "duration_ms": 300
+      },
+      "status": "대기",
+      "selected_image": null,
+      "selected_video": null
     },
     {
       "id": 9,
+      "layer": 0,
       "start_s": 11.47,
       "end_s": 12.77,
       "shot_type": "클로즈업",
-      "characters": ["화가"],
-      "action": "1. 자사호를 기울여 찻잔에 차를 따른다 2. 김이 피어오른다. 오른쪽에 오설록 일로향 원통이 놓여 있다",
+      "framing": "다구와 제품이 프레임을 채운다. 손만 보이고 얼굴은 안 보인다",
       "camera_move": "고정",
+      "characters": [
+        "화가"
+      ],
+      "action": "1. 자사호를 기울여 찻잔에 차를 따른다 2. 김이 피어오른다. 오른쪽에 오설록 일로향 원통이 놓여 있다",
+      "props": [
+        "도기 주전자",
+        "도기 찻잔",
+        "나무 차판",
+        "오설록 일로향 원통"
+      ],
+      "fantasy": null,
+      "narration": null,
+      "subtitle": null,
       "keycut_id": "K1",
       "ref_frame": "refs/cut06.jpg",
-      "status": "대기"
+      "ref_frame_end": null,
+      "key_moment": "middle",
+      "transition_in": null,
+      "status": "대기",
+      "selected_image": null,
+      "selected_video": null
     },
     {
       "id": 10,
+      "layer": 0,
       "start_s": 12.77,
       "end_s": 14.68,
       "shot_type": "풀샷",
-      "characters": ["화가"],
-      "action": "완성된 파도 그림이 놓인 이젤 앞을 화가가 왼쪽에서 오른쪽으로 천천히 지나간다",
+      "framing": "전신과 실내가 보인다. 인물은 프레임 높이의 1/3쯤",
       "camera_move": "고정",
+      "characters": [
+        "화가"
+      ],
+      "action": "완성된 파도 그림이 놓인 이젤 앞을 화가가 왼쪽에서 오른쪽으로 천천히 지나간다",
+      "props": [
+        "이젤과 캔버스"
+      ],
+      "fantasy": null,
+      "narration": null,
+      "subtitle": null,
       "keycut_id": "K1",
       "ref_frame": "refs/cut07.jpg",
-      "status": "대기"
+      "ref_frame_end": null,
+      "key_moment": "middle",
+      "transition_in": null,
+      "status": "대기",
+      "selected_image": null,
+      "selected_video": null
     },
     {
       "id": 11,
+      "layer": 0,
       "start_s": 14.68,
       "end_s": 16.41,
       "shot_type": "미디엄샷",
-      "characters": ["화가"],
-      "action": "1. 창가에 서서 찻잔을 입가로 들어 올린다 2. 차를 한 모금 마신다",
+      "framing": "허리 위가 보인다. 인물이 프레임 높이의 절반쯤",
       "camera_move": "고정",
+      "characters": [
+        "화가"
+      ],
+      "action": "1. 창가에 서서 찻잔을 입가로 들어 올린다 2. 차를 한 모금 마신다",
+      "props": [
+        "도기 찻잔"
+      ],
+      "fantasy": null,
+      "narration": null,
+      "subtitle": null,
       "keycut_id": "K1",
       "ref_frame": "refs/cut08.jpg",
-      "status": "대기"
+      "ref_frame_end": null,
+      "key_moment": "middle",
+      "transition_in": null,
+      "status": "대기",
+      "selected_image": null,
+      "selected_video": null
     }
   ]
 }
