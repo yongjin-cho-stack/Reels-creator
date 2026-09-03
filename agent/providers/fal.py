@@ -125,6 +125,45 @@ def generate(prompt: str, image_urls: list[str], *, num_images: int = 2,
     return urls
 
 
+def video_price(duration_s: int) -> float:
+    """5초 $0.35, 그 뒤로 초당 $0.07 (모델 페이지 실측 가격 기준)."""
+    return PRICE_VIDEO_5S + max(0, duration_s - 5) * 0.07
+
+
+def generate_video(prompt: str, image_url: str, *, duration_s: int = 5,
+                    negative_prompt: str = "",
+                    step: str = "?", target: str = "?") -> str:
+    """이미지 1장 + 주문서 → 영상 URL 1개. **돈이 나간다.**
+
+    나노바나나(이미지)와 달리 클링은 한 번에 영상 1개만 만든다.
+    후보 여러 개가 필요하면 이 함수를 여러 번 부른다 (video.py 가 그렇게 함).
+
+    ⚠️ 클링은 임의의 초 단위를 안 받고 **5초 또는 10초만** 받는다.
+    컷이 그보다 짧아도 항상 이 길이로 뽑고, 필요한 만큼만 편집(C-1)에서 앞을 잘라 쓴다.
+
+    ※ 응답 모양(`res["video"]["url"]`)은 fal 의 다른 영상 모델들과 같은 관례를 따른
+    추정이다 — nano-banana(이미지)처럼 실제 호출로 확인된 값이 아니니, 처음 실제로
+    돌릴 때 에러 메시지에 찍히는 raw 응답을 보고 필요하면 이 부분을 고칠 것.
+    """
+    if duration_s not in (5, 10):
+        raise ValueError(f"클링은 5초 또는 10초만 받습니다 ({duration_s}초 아님)")
+
+    usd = video_price(duration_s)
+    cost.guard(usd)
+
+    body = {"prompt": prompt, "image_url": image_url, "duration": str(duration_s)}
+    if negative_prompt:
+        body["negative_prompt"] = negative_prompt
+
+    res = _post(f"{RUN}/{MODEL_VIDEO}", body, timeout=600)
+    url = (res.get("video") or {}).get("url")
+    if not url:
+        raise FalError(f"영상 URL을 못 찾았습니다 — 응답 모양이 다를 수 있음: {res}")
+
+    cost.log(step, "kling-v2.5-turbo-pro", target, 1, usd)
+    return url
+
+
 def download(url: str, dst: str | Path) -> Path:
     dst = Path(dst)
     dst.parent.mkdir(parents=True, exist_ok=True)
