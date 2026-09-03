@@ -7,13 +7,36 @@
 
 스타일 레퍼런스는 여기 넣지 않는다. 이미 키컷에 녹아 있어서
 또 넣으면 서로 상쇄돼 흐려진다.
+
+## 2026-09-03 · 컷 3 하나를 $0.30 에 뽑아 보고 알아낸 것
+
+**된 것 — 인물이 안 섞인다.**
+키컷(여성)과 원본 프레임(남성)을 같이 넣었는데 **원본 남자 얼굴이 안 들어왔다.**
+참조마다 역할을 지정하는 방식이 A·D 두 단계 연속으로 작동했다.
+
+**아직 안 된 것 둘. 둘 다 프롬프트 문제다.**
+
+① **구도 지시가 약하다.**
+   원본 컷 3은 «얼굴이 화면 절반을 채우는 클로즈업»인데 생성본은 인물이 작고
+   공간이 많다. `shot_type: "클로즈업"` 만으로는 **인물 크기가 안 잡힌다** —
+   구도 참조 이미지를 넣었는데도 그렇다.
+   → 「얼굴이 프레임 높이의 60% 이상」처럼 **숫자로** 적어야 한다.
+     cuts.json 에 그 칸이 없다(framing 같은 것). 팀과 정할 일이다.
+
+② **props 가 매 컷에 전부 나온다.**
+   keycut.json 의 props 를 통째로 주문서에 넣었더니 컷 3(붓질하는 장면)에
+   **찻잔·자사호·옹기·일로향이 다 깔렸다.**
+   → props 를 갈라야 한다:
+       고정 소품   붓 · 팔레트 · 안경      — 인물에 늘 붙어 있는 것
+       컷별 소품   다구 · 제품 · 옹기      — 그 컷에만 나오는 것
+     지금은 build_prompt 가 props 전부를 넣는다. 여기가 고칠 자리다.
 """
 
 from __future__ import annotations
 
-from ..paths import IMAGES, KEYCUT, ROOT, rel
+from ..paths import IMAGES, ROOT, rel
+from ..providers import fal
 from ._common import StepBlocked, load_cuts, load_keycut
-from .. import cost
 
 MODEL = "fal-ai/nano-banana-pro/edit"
 PRICE_PER_IMAGE = 0.15
@@ -58,23 +81,41 @@ def check() -> dict:
     }
 
 
-def run(dry: bool = True) -> None:
+def run(dry: bool = True, only: int | None = None) -> None:
     plan = check()
     IMAGES.mkdir(exist_ok=True)
+    jobs = [j for j in plan["jobs"] if only is None or j[0]["id"] == only]
+    usd = PRICE_PER_IMAGE * NUM_IMAGES * len(jobs)
 
     print(f"[D 컷 이미지] {MODEL}")
-    print(f"  컷 {len(plan['jobs'])}개 × {NUM_IMAGES}장 = {len(plan['jobs']) * NUM_IMAGES}장")
-    print(f"  예상 비용 ${plan['planned_usd']:.2f}")
-    for cut, ref in plan["jobs"][:3]:
+    print(f"  키컷      {plan['card'].get('approved_image')}")
+    print(f"  컷 {len(jobs)}개 × {NUM_IMAGES}장 = {len(jobs) * NUM_IMAGES}장"
+          + (f"   (컷 {only} 만)" if only else ""))
+    print(f"  예상 비용 ${usd:.2f}")
+    for cut, ref in jobs[:4]:
         print(f"    · 컷{cut['id']:>2}  구도 {rel(ref)}  ← {cut['shot_type']}")
-    if len(plan["jobs"]) > 3:
-        print(f"    · … 외 {len(plan['jobs']) - 3}개")
+    if len(jobs) > 4:
+        print(f"    · … 외 {len(jobs) - 4}개")
     for cut, ref in plan["missing"]:
         print(f"    ✗ 컷{cut['id']:>2}  {rel(ref)} 없음")
 
     if dry:
         print("  → 시험 실행(--dry). 실제 호출 안 함.")
         return
+    if not jobs:
+        print("  ⏸ 만들 컷이 없습니다.")
+        return
 
-    cost.guard(plan["planned_usd"])
-    raise NotImplementedError("fal 배선은 다음 차례입니다 (providers/fal.py)")
+    key_url = fal.upload(ROOT / plan["card"]["approved_image"])
+    for cut, ref in jobs:
+        print(f"  컷{cut['id']:>2} 생성 중…")
+        urls = fal.generate(
+            build_prompt(plan["card"], cut),
+            [key_url, fal.upload(ref)],          # ① 이 인물  ② 이 구도
+            num_images=NUM_IMAGES, resolution="2K", aspect_ratio="16:9",
+            step="image", target=f"cut{cut['id']:02d}")
+        for i, u in enumerate(urls):
+            dst = IMAGES / f"cut{cut['id']:02d}_{chr(ord('a') + i)}.png"
+            fal.download(u, dst)
+            print(f"    ✅ {rel(dst)}")
+    print("  → 컷마다 한 장을 골라 images/cutNN.png 로 이름을 바꾸세요.")

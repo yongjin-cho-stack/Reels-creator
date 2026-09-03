@@ -200,7 +200,7 @@ def decide(rep: dict) -> dict:
             "look": [dict(e) for e in LOOK]}
 
 
-def run(dry: bool = True) -> None:
+def run(dry: bool = True, only: int | None = None) -> None:
     print("[C-2 다듬기]  재료 모으기")
     rep = measure()
 

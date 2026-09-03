@@ -10,9 +10,9 @@
 
 from __future__ import annotations
 
-from ..paths import KEYCUTS, STYLE, REFS, rel
+from ..paths import KEYCUT, KEYCUTS, REFS, STYLE, rel
+from ..providers import fal
 from ._common import load_keycut, require_dir, save_json
-from .. import cost
 
 MODEL = "fal-ai/nano-banana-pro/edit"
 PRICE_PER_IMAGE = 0.15          # 모델 페이지 실측: "$0.15 per image" (1K·2K)
@@ -66,12 +66,13 @@ def check() -> dict:
     }
 
 
-def run(dry: bool = True) -> None:
+def run(dry: bool = True, only: int | None = None) -> None:
     plan = check()
     KEYCUTS.mkdir(exist_ok=True)
 
     print(f"[A 키컷] {MODEL}")
     print(f"  대상      {plan['keycut_id']}  (approved={plan['approved']})")
+    print(f"  fal 열쇠  {fal.key_status()}")
     print(f"  참조 그림 {len(plan['refs'])}장")
     for p, role in plan["refs"]:
         print(f"    · {rel(p):<28} → {role}")
@@ -86,6 +87,26 @@ def run(dry: bool = True) -> None:
     if dry:
         print("  → 시험 실행(--dry). 실제 호출 안 함.")
         return
+    if not plan["refs"]:
+        print("  ⏸ 참조 그림이 하나도 없습니다.")
+        return
 
-    cost.guard(plan["planned_usd"])
-    raise NotImplementedError("fal 배선은 다음 차례입니다 (providers/fal.py)")
+    print("  참조를 올리는 중…")
+    urls = [fal.upload(p) for p, _ in plan["refs"]]
+
+    print(f"  생성 중…  (몇십 초 걸립니다)")
+    out = fal.generate(plan["prompt"], urls, num_images=NUM_IMAGES,
+                       resolution="2K", aspect_ratio="16:9",
+                       step="keycut", target=plan["keycut_id"])
+
+    saved = []
+    for i, u in enumerate(out):
+        dst = KEYCUTS / f"{plan['keycut_id']}_{chr(ord('a') + i)}.png"
+        fal.download(u, dst)
+        saved.append(dst)
+        print(f"  ✅ {rel(dst)}")
+
+    print()
+    print("  → 하나를 골라 keycut.json 에 적으세요:")
+    print(f'       "approved_image": "keycuts/{saved[0].name}",  "approved": true')
+    print("     그래야 D(컷 이미지)가 시작됩니다.")

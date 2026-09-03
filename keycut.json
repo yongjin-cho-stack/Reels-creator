@@ -17,8 +17,8 @@
         "오설록 일로향 원통 패키지 (검정 원통, 금색 로고)"
       ],
       "time_of_day": "밤, 실내 작업실 — 따뜻한 실내등과 창밖의 차가운 달빛 바다가 함께 든다",
-      "approved": false,
-      "approved_image": null
+      "approved": true,
+      "approved_image": "keycuts/K1_a.png"
     }
   ]
 }

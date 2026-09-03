@@ -41,6 +41,8 @@ def main(argv: list[str] | None = None) -> int:
     ap = argparse.ArgumentParser(prog="agent.run")
     ap.add_argument("step", choices=[*STEPS, "all"])
     ap.add_argument("--go", action="store_true", help="실제로 실행 (기본은 시험 실행)")
+    ap.add_argument("--only-cut", type=int, default=None,
+                    help="컷 하나만 (파일럿). 돈을 조금만 쓰고 확인할 때")
     args = ap.parse_args(argv)
 
     names = ORDER if args.step == "all" else [args.step]
@@ -52,7 +54,7 @@ def main(argv: list[str] | None = None) -> int:
             print()
         print(f"── {label} " + "─" * (52 - len(label)))
         try:
-            mod.run(dry=not args.go)
+            mod.run(dry=not args.go, only=args.only_cut)
         except StepBlocked as e:
             blocked += 1
             print(f"  ⏸ 멈춤 — {e}")

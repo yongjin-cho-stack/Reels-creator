@@ -88,7 +88,7 @@ def build(plan: dict) -> tuple[str, str]:
     return pid, kitkat.editor_url(pid)
 
 
-def run(dry: bool = True) -> None:
+def run(dry: bool = True, only: int | None = None) -> None:
     plan = check()
 
     print("[B 애니매틱]  kitkat")

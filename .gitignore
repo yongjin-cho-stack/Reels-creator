@@ -10,8 +10,7 @@ videos/*
 # 키컷 후보도 양이 많다. 채택본만 손으로 올린다.
 keycuts/*
 !keycuts/.gitkeep
-!keycuts/K1.png
-!keycuts/K1.jpg
+!keycuts/K1_a.png   # 채택본은 올린다 — D 를 맡는 사람이 필요하다
 
 # 비용 기록은 로컬에만
 cost.log
