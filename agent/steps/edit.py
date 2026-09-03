@@ -1,19 +1,33 @@
 """단계 C · 최종 편집 — 영상 조각을 조립해 final.mp4.
 
-B(애니매틱)의 뼈대를 거의 그대로 쓴다. 차이는 «정지 이미지냐 영상이냐» 뿐이다.
-그래서 B 를 먼저 만들면 C 는 거의 따라온다.
+두 층으로 나뉜다.
 
-이 단계에만 있는 특수 작업이 하나 있다 — **컷 4의 분할화면**.
-배경 항공샷 위에 창 3개가 시각차를 두고 열린다. 생성이 아니라 편집이다.
+  C-1  기계적 조립   cuts.json 대로 붙이고 분할화면을 얹는다   ← 이 파일
+  C-2  다듬기        받은 영상을 보고 판단해서 고친다          ← polish.py
+
+C-1 은 «받은 영상이 어떻든 똑같이» 동작한다. 그래서 규칙으로 적을 수 있다.
+클링 결과가 매번 다른 것(색이 튀고, 5초 중 쓸 만한 건 1초뿐이고, 앞부분이
+녹아 있는)을 다루는 건 C-2 의 몫이다.
+
+B(애니매틱)의 build 를 그대로 닮았다 — kind 가 image → video 로 바뀌고
+분할화면이 붙는다.
+
+## 분할화면
+
+컷 4가 배경(제주 항공샷)이고 컷 5·6·7 이 그 위에 시각차를 두고 열리는 창이다.
+자리는 원본 1920×1080 프레임에서 잰 값이다.
 """
 
 from __future__ import annotations
 
-from ..paths import BGM, FAKE_VIDEOS, FINAL, VIDEOS, rel
-from ._common import load_cuts, overlays, timeline, total_seconds
+import shutil
 
-# 분할화면 창의 자리 — 원본 1920×1080 프레임에서 잰 값.
-# (x, y, w, h) 왼쪽 위 기준
+from ..paths import BGM, FAKE_VIDEOS, FINAL, VIDEOS, rel
+from ..providers import kitkat
+from ._common import load_cuts, overlays, timeline, total_seconds
+from .animatic import FPS, H, W, pick_bgm
+
+# 분할화면 창의 자리 — 원본 프레임에서 잰 값 (x, y, w, h), 왼쪽 위 기준
 WINDOW_BOX = {
     5: (180, 80, 850, 485),      # 창1 붓질하는 측면
     6: (1030, 222, 825, 618),    # 창2 팔레트에 물감 붓기
@@ -31,21 +45,87 @@ def source_for(cut: dict) -> tuple:
     return VIDEOS / f"cut{cut['id']:02d}.mp4", "없음"
 
 
+def overlay_transform(cut_id: int) -> dict:
+    """창 하나를 «어디에 얼마나 크게» 놓을지.
+
+    ⚠️ **x·y 는 픽셀이 아니라 «캔버스 대비 비율»이다.** 렌더러가 이렇게 쓴다:
+
+        left = (canvasW - boxW) / 2 + x * canvasW
+
+    픽셀을 넣으면 화면 밖으로 날아가서 **아무것도 안 보인다**(에러도 안 난다).
+    처음에 -355 를 넣었다가 -355×1920 = -68만 px 로 사라졌다.
+
+    scale 은 «캔버스에 맞춘 크기» 기준의 배율이다. 소스가 1920×1080 이면
+    scale 0.44 가 곧 화면 폭의 44% 다.
+    """
+    x, y, w, h = WINDOW_BOX[cut_id]
+    return {
+        "scale": round(w / W, 4),
+        "x": round(((x + w / 2) - W / 2) / W, 4),
+        "y": round(((y + h / 2) - H / 2) / H, 4),
+        "rotation": 0,          # 네 칸이 다 있어야 한다 (서버 검증)
+    }
+
+
 def check() -> dict:
     cuts = load_cuts()
     ready, missing = [], []
     for cut in cuts["cuts"]:
         src, kind = source_for(cut)
         (ready if src.exists() else missing).append((cut, src, kind))
-
     return {
-        "base": timeline(cuts),
-        "overlays": overlays(cuts),
-        "ready": ready,
-        "missing": missing,
-        "bgm": sorted(BGM.glob("*")) if BGM.is_dir() else [],
-        "seconds": total_seconds(cuts),
+        "cuts": cuts, "base": timeline(cuts), "overlays": overlays(cuts),
+        "ready": ready, "missing": missing,
+        "bgm": pick_bgm(), "seconds": total_seconds(cuts),
     }
+
+
+def build(plan: dict) -> tuple[str, str]:
+    doc = kitkat.create_project("오설록 17초 · 최종")
+    pid = doc["id"]
+    vt = kitkat.track_of(doc, "video")
+    at = kitkat.track_of(doc, "audio")
+    cmds = [kitkat.cmd_settings(W, H, FPS)]
+
+    # ── 바닥 트랙
+    for cut in plan["base"]:
+        src, _ = source_for(cut)
+        if not src.exists():
+            continue
+        a = kitkat.import_asset(pid, str(src.resolve()))
+        start = int(round(cut["start_s"] * 1000))
+        dur = int(round((cut["end_s"] - cut["start_s"]) * 1000))
+        cmds.append(kitkat.cmd_add_clip(
+            vt, f"cut{cut['id']:02d}", "video", a["id"], start, dur,
+            **{"in": 0, "out": dur, "speed": 1, "volume": 0}))
+
+    # ── 분할화면 — 창마다 트랙을 하나씩 더 쌓는다 (겹치니까 같은 트랙에 못 넣는다)
+    for cut in plan["overlays"]:
+        src, _ = source_for(cut)
+        if not src.exists():
+            continue
+        tid = f"ov{cut['id']}"
+        cmds.append({"type": "addTrack",
+                     "track": {"id": tid, "kind": "video",
+                               "name": f"분할창{cut['id']}", "clips": []}})
+        a = kitkat.import_asset(pid, str(src.resolve()))
+        start = int(round(cut["start_s"] * 1000))
+        dur = int(round((cut["end_s"] - cut["start_s"]) * 1000))
+        cmds.append(kitkat.cmd_add_clip(
+            tid, f"cut{cut['id']:02d}", "video", a["id"], start, dur,
+            **{"in": 0, "out": dur, "speed": 1, "volume": 0,
+               "transform": overlay_transform(cut["id"])}))
+
+    # ── 음악
+    if plan["bgm"]:
+        a = kitkat.import_asset(pid, str(plan["bgm"].resolve()))
+        dur = int(round(plan["seconds"] * 1000))
+        cmds.append(kitkat.cmd_add_clip(
+            at, "bgm", "audio", a["id"], 0, dur,
+            **{"in": 0, "out": dur, "speed": 1, "volume": 1}))
+
+    kitkat.apply_commands(pid, cmds)
+    return pid, kitkat.editor_url(pid)
 
 
 def run(dry: bool = True) -> None:
@@ -54,24 +134,34 @@ def run(dry: bool = True) -> None:
     print("[C 최종 편집]  kitkat")
     print(f"  길이      {plan['seconds']}초")
     print(f"  준비된 컷 {len(plan['ready'])} / {len(plan['ready']) + len(plan['missing'])}")
-    for cut, src, kind in plan["ready"][:4]:
-        print(f"    · 컷{cut['id']:>2}  {kind:<8} {rel(src)}")
-    if len(plan["ready"]) > 4:
-        print(f"    · … 외 {len(plan['ready']) - 4}개")
+    for cut, src, kind in plan["ready"]:
+        tag = "분할창" if cut["id"] in WINDOW_BOX else "바닥"
+        print(f"    · 컷{cut['id']:>2}  {tag:<4} {kind:<8} {rel(src)}")
     for cut, src, kind in plan["missing"]:
         print(f"    ✗ 컷{cut['id']:>2}  영상 없음")
 
     if plan["overlays"]:
-        print("  분할화면 (컷 4 위에 얹는다)")
+        print("  분할화면 (컷 4 위에)")
         for c in plan["overlays"]:
-            box = WINDOW_BOX.get(c["id"])
-            pos = f"{box[0]},{box[1]} {box[2]}×{box[3]}" if box else "자리 미정"
-            print(f"      컷{c['id']:>2}  {c['start_s']:>6.2f}s 등장  {pos}")
+            t = overlay_transform(c["id"])
+            print(f"      컷{c['id']:>2}  {c['start_s']:>6.2f}s 등장  "
+                  f"scale {t['scale']}  비율 ({t['x']:+.3f}, {t['y']:+.3f})")
 
     print(f"  결과      {rel(FINAL)}")
-
     if dry:
         print("  → 시험 실행(--dry). kitkat 호출 안 함.")
         return
 
-    raise NotImplementedError("kitkat 배선은 다음 차례입니다 (providers/kitkat.py)")
+    pid, url = build(plan)
+    print(f"  프로젝트  {pid}")
+    print(f"  편집기    {url}")
+
+    job = kitkat.render(pid, format="mp4", width=W, height=H)
+    print(f"  렌더 중…  job {job}")
+    res = kitkat.wait_job(job)
+    src = (res.get("result") or {}).get("path")
+    if src:
+        shutil.copyfile(src, FINAL)
+        print(f"  ✅ 완료    {rel(FINAL)}  ({FINAL.stat().st_size / 1e6:.1f} MB)")
+    else:
+        print(f"  ⚠ 결과 경로를 못 찾았습니다: {res}")
