@@ -22,7 +22,9 @@ from __future__ import annotations
 
 import shutil
 
-from ..paths import BGM, FAKE_VIDEOS, FINAL, VIDEOS, rel
+import json
+
+from ..paths import BGM, FAKE_VIDEOS, FINAL, ROOT, VIDEOS, rel
 from ..providers import kitkat
 from ._common import load_cuts, overlays, timeline, total_seconds
 from .animatic import FPS, H, W, pick_bgm
@@ -67,6 +69,14 @@ def overlay_transform(cut_id: int) -> dict:
     }
 
 
+def load_polish() -> dict:
+    """C-2 의 결정을 읽는다. 없으면 «아무것도 안 고침» 이다."""
+    p = ROOT / "polish" / "decide.json"
+    if not p.exists():
+        return {"transitions": [], "trims": {}, "clamps": {}}
+    return json.loads(p.read_text(encoding="utf-8"))
+
+
 def check() -> dict:
     cuts = load_cuts()
     ready, missing = [], []
@@ -77,6 +87,7 @@ def check() -> dict:
         "cuts": cuts, "base": timeline(cuts), "overlays": overlays(cuts),
         "ready": ready, "missing": missing,
         "bgm": pick_bgm(), "seconds": total_seconds(cuts),
+        "polish": load_polish(),
     }
 
 
@@ -87,17 +98,32 @@ def build(plan: dict) -> tuple[str, str]:
     at = kitkat.track_of(doc, "audio")
     cmds = [kitkat.cmd_settings(W, H, FPS)]
 
-    # ── 바닥 트랙
+    # ── 바닥 트랙 (C-2 의 결정을 반영한다)
+    pol = plan["polish"]
+    trims = {int(k): v for k, v in pol.get("trims", {}).items()}
+    clamps = {int(k): v for k, v in pol.get("clamps", {}).items()}
+    t_in = {tr["to"]: tr for tr in pol.get("transitions", [])}
+    t_out = {tr["from"]: tr for tr in pol.get("transitions", [])}
+
     for cut in plan["base"]:
         src, _ = source_for(cut)
         if not src.exists():
             continue
         a = kitkat.import_asset(pid, str(src.resolve()))
+        cid = cut["id"]
         start = int(round(cut["start_s"] * 1000))
         dur = int(round((cut["end_s"] - cut["start_s"]) * 1000))
+        if cid in clamps:                      # 소스가 짧다 → 있는 만큼만
+            dur = min(dur, int(clamps[cid] * 1000))
+        head = int(round(trims.get(cid, 0) * 1000))   # 앞에서 버릴 만큼
+        extra = {"in": head, "out": head + dur, "speed": 1, "volume": 0}
+        if cid in t_in:
+            extra["transitionIn"] = {"type": t_in[cid]["type"],
+                                     "duration": t_in[cid]["duration_ms"]}
+        # transitionOut 은 걸지 않는다 — 양쪽에 걸면 둘 다 반투명한 순간에
+        # 배경(검정)이 비쳐서 한 프레임이 새까맣게 된다. 들어오는 쪽만 건다.
         cmds.append(kitkat.cmd_add_clip(
-            vt, f"cut{cut['id']:02d}", "video", a["id"], start, dur,
-            **{"in": 0, "out": dur, "speed": 1, "volume": 0}))
+            vt, f"cut{cid:02d}", "video", a["id"], start, dur, **extra))
 
     # ── 분할화면 — 창마다 트랙을 하나씩 더 쌓는다 (겹치니까 같은 트랙에 못 넣는다)
     for cut in plan["overlays"]:

@@ -1,0 +1,198 @@
+{
+  "cuts": [
+    {
+      "id": 1,
+      "source": "videos_fake\\cut01.mp4",
+      "kind": "원본조각",
+      "source_seconds": 5.672,
+      "need_seconds": 5.0,
+      "slack_seconds": 0.672,
+      "frames": {
+        "a": "polish\\frames\\cut01_a.jpg",
+        "b": "polish\\frames\\cut01_b.jpg",
+        "c": "polish\\frames\\cut01_c.jpg"
+      }
+    },
+    {
+      "id": 2,
+      "source": "videos_fake\\cut02.mp4",
+      "kind": "원본조각",
+      "source_seconds": 1.134,
+      "need_seconds": 1.13,
+      "slack_seconds": 0.004,
+      "frames": {
+        "a": "polish\\frames\\cut02_a.jpg",
+        "b": "polish\\frames\\cut02_b.jpg",
+        "c": "polish\\frames\\cut02_c.jpg"
+      }
+    },
+    {
+      "id": 3,
+      "source": "videos_fake\\cut03.mp4",
+      "kind": "원본조각",
+      "source_seconds": 1.168,
+      "need_seconds": 1.14,
+      "slack_seconds": 0.028,
+      "frames": {
+        "a": "polish\\frames\\cut03_a.jpg",
+        "b": "polish\\frames\\cut03_b.jpg",
+        "c": "polish\\frames\\cut03_c.jpg"
+      }
+    },
+    {
+      "id": 4,
+      "source": "videos_fake\\cut04.mp4",
+      "kind": "원본조각",
+      "source_seconds": 2.769,
+      "need_seconds": 2.83,
+      "slack_seconds": -0.061,
+      "frames": {
+        "a": "polish\\frames\\cut04_a.jpg",
+        "b": "polish\\frames\\cut04_b.jpg",
+        "c": "polish\\frames\\cut04_c.jpg"
+      }
+    },
+    {
+      "id": 5,
+      "source": "videos_fake\\cut05.mp4",
+      "kind": "원본조각",
+      "source_seconds": 2.102,
+      "need_seconds": 2.07,
+      "slack_seconds": 0.032,
+      "frames": {
+        "a": "polish\\frames\\cut05_a.jpg",
+        "b": "polish\\frames\\cut05_b.jpg",
+        "c": "polish\\frames\\cut05_c.jpg"
+      }
+    },
+    {
+      "id": 6,
+      "source": "videos_fake\\cut06.mp4",
+      "kind": "원본조각",
+      "source_seconds": 1.768,
+      "need_seconds": 1.74,
+      "slack_seconds": 0.028,
+      "frames": {
+        "a": "polish\\frames\\cut06_a.jpg",
+        "b": "polish\\frames\\cut06_b.jpg",
+        "c": "polish\\frames\\cut06_c.jpg"
+      }
+    },
+    {
+      "id": 7,
+      "source": "videos_fake\\cut07.mp4",
+      "kind": "원본조각",
+      "source_seconds": 0.767,
+      "need_seconds": 0.74,
+      "slack_seconds": 0.027,
+      "frames": {
+        "a": "polish\\frames\\cut07_a.jpg",
+        "b": "polish\\frames\\cut07_b.jpg",
+        "c": "polish\\frames\\cut07_c.jpg"
+      }
+    },
+    {
+      "id": 8,
+      "source": "videos_fake\\cut08.mp4",
+      "kind": "원본조각",
+      "source_seconds": 1.401,
+      "need_seconds": 1.37,
+      "slack_seconds": 0.031,
+      "frames": {
+        "a": "polish\\frames\\cut08_a.jpg",
+        "b": "polish\\frames\\cut08_b.jpg",
+        "c": "polish\\frames\\cut08_c.jpg"
+      }
+    },
+    {
+      "id": 9,
+      "source": "videos_fake\\cut09.mp4",
+      "kind": "원본조각",
+      "source_seconds": 1.301,
+      "need_seconds": 1.3,
+      "slack_seconds": 0.001,
+      "frames": {
+        "a": "polish\\frames\\cut09_a.jpg",
+        "b": "polish\\frames\\cut09_b.jpg",
+        "c": "polish\\frames\\cut09_c.jpg"
+      }
+    },
+    {
+      "id": 10,
+      "source": "videos_fake\\cut10.mp4",
+      "kind": "원본조각",
+      "source_seconds": 1.935,
+      "need_seconds": 1.91,
+      "slack_seconds": 0.025,
+      "frames": {
+        "a": "polish\\frames\\cut10_a.jpg",
+        "b": "polish\\frames\\cut10_b.jpg",
+        "c": "polish\\frames\\cut10_c.jpg"
+      }
+    },
+    {
+      "id": 11,
+      "source": "videos_fake\\cut11.mp4",
+      "kind": "원본조각",
+      "source_seconds": 1.668,
+      "need_seconds": 1.73,
+      "slack_seconds": -0.062,
+      "frames": {
+        "a": "polish\\frames\\cut11_a.jpg",
+        "b": "polish\\frames\\cut11_b.jpg",
+        "c": "polish\\frames\\cut11_c.jpg"
+      }
+    }
+  ],
+  "boundaries": [
+    {
+      "at_s": 5.0,
+      "from": 1,
+      "to": 2,
+      "out": "polish\\pairs\\b01-02_out.jpg",
+      "in": "polish\\pairs\\b01-02_in.jpg"
+    },
+    {
+      "at_s": 6.13,
+      "from": 2,
+      "to": 3,
+      "out": "polish\\pairs\\b02-03_out.jpg",
+      "in": "polish\\pairs\\b02-03_in.jpg"
+    },
+    {
+      "at_s": 7.27,
+      "from": 3,
+      "to": 4,
+      "out": "polish\\pairs\\b03-04_out.jpg",
+      "in": "polish\\pairs\\b03-04_in.jpg"
+    },
+    {
+      "at_s": 10.1,
+      "from": 4,
+      "to": 8,
+      "out": "polish\\pairs\\b04-08_out.jpg",
+      "in": "polish\\pairs\\b04-08_in.jpg"
+    },
+    {
+      "at_s": 11.47,
+      "from": 8,
+      "to": 9,
+      "out": "polish\\pairs\\b08-09_out.jpg",
+      "in": "polish\\pairs\\b08-09_in.jpg"
+    },
+    {
+      "at_s": 12.77,
+      "from": 9,
+      "to": 10,
+      "out": "polish\\pairs\\b09-10_out.jpg",
+      "in": "polish\\pairs\\b09-10_in.jpg"
+    },
+    {
+      "at_s": 14.68,
+      "from": 10,
+      "to": 11,
+      "out": "polish\\pairs\\b10-11_out.jpg",
+      "in": "polish\\pairs\\b10-11_in.jpg"
+    }
+  ]
+}

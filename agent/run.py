@@ -24,16 +24,17 @@ for _s in (sys.stdout, sys.stderr):
         pass
 
 from . import cost
-from .steps import animatic, edit, image, keycut
+from .steps import animatic, edit, image, keycut, polish
 from .steps._common import StepBlocked
 
 STEPS = {
     "keycut": ("A · 키컷 생성", keycut),
     "image": ("D · 컷 이미지", image),
     "animatic": ("B · 애니매틱", animatic),
-    "edit": ("C · 최종 편집", edit),
+    "edit": ("C-1 · 기계적 조립", edit),
+    "polish": ("C-2 · 다듬기", polish),
 }
-ORDER = ["keycut", "image", "animatic", "edit"]
+ORDER = ["keycut", "image", "animatic", "edit", "polish"]
 
 
 def main(argv: list[str] | None = None) -> int:

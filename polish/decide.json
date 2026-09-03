@@ -1,0 +1,23 @@
+{
+  "transitions": [
+    {
+      "from": 3,
+      "to": 4,
+      "type": "fade",
+      "duration_ms": 400
+    },
+    {
+      "from": 4,
+      "to": 8,
+      "type": "fade",
+      "duration_ms": 300
+    }
+  ],
+  "trims": {
+    "1": 0.672
+  },
+  "clamps": {
+    "4": 2.769,
+    "11": 1.668
+  }
+}
